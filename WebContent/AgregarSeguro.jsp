@@ -64,11 +64,15 @@
 	</tr>
 	<tr> 
 		<td>Costo contratación</td>
-		<td style="height: 0px; "><input type="text" name="txtCostoContratacion" min="1" max="999999" required/><br></td>
+		<td style="height: 0px; "><input type="text" name="txtCostoContratacion" min="1" max="999999" 
+		required  maxlength="10" autocomplete="off" onkeypress="return((event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46))"
+		value="0.0" /><br></td>
 	</tr>
 	<tr> 
 		<td style="width: 165px; ">Costo máximo asegurado</td>
-		<td style="height: 0px; "><input type="text" name="txtCostoMaximo" min="1" max="999999" required/><br></td>
+		<td style="height: 0px; "><input type="text" name="txtCostoMaximo" min="1" max="999999" 
+		required  maxlength="10" autocomplete="off" onkeypress="return((event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46))"
+		value="0.0" /><br></td>
 	</tr>
 	<tr> 
 		<td></td>
