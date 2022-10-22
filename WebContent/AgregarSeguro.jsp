@@ -1,4 +1,7 @@
+<%@page import="dominio.SeguroDao"%>
+<%@page import="dominio.TipoSeguroDao"%>
 <%@ page import="dominio.TipoSeguro" %>
+<%@ page import="dominio.Seguro" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -20,10 +23,15 @@
 		<td style="width: 139px; ">Id Seguro</td>
 		<td style="height: 0px; "><%
 			Integer aux=0;
-			if(request.getAttribute("ultimoId")!=null){
+			if(request.getAttribute("ultimoId")!=null ){
 				aux = (Integer)request.getAttribute("ultimoId");			
-			} 
-			%>
+			}else {%>
+				<%
+				SeguroDao segDao = new SeguroDao();
+				Seguro seguro = segDao.ObtenerIdSeg_Increment();
+				aux = seguro.getIdSeguro();%>
+			<%}%>
+			
 			<%=aux %></td>
 	</tr>
 	<tr> 
@@ -32,32 +40,35 @@
 	</tr>
 	<tr> 
 		<td>Tipo de Seguro</td>
-		<td style="height: 0px; "><select name="tipoSeguro">
+		<td style="height: 0px; ">
+			<select name="tipoSeguro" >
 						<%
-						ArrayList<TipoSeguro> listaTipos = null;
+						TipoSeguroDao tiposeguroDao = new TipoSeguroDao();
+						ArrayList<TipoSeguro> listaTipos = tiposeguroDao.obtenerTiposSeguros();//(ArrayList<TipoSeguro>)request.getAttribute("listaTipos");
 						String idTipo="";
-						if(request.getAttribute("listaTipos")!=null){
-							listaTipos = (ArrayList<TipoSeguro>)request.getAttribute("listaTipos");
-						}
+						//if(request.getAttribute("listaTipos")!=null){
+							
+						//}
 						
-						for(TipoSeguro tps: listaTipos){
-						idTipo = String.valueOf(tps.getIdTipo());
-						 %>	
-						 <option value="<%=idTipo  %>">
-						 	<%= tps.getDescripcion()%>
-						 </option>
-						 <%} %>
+						for(TipoSeguro tps : listaTipos){
+							idTipo = String.valueOf(tps.getIdTipo());
+						%>	
+						 	<option value="<%=idTipo  %>"><%= tps.getDescripcion()%> </option>
+						<%
+						} 
+						%>
 						 
 													 				
-			 </select>	</td>
+			 </select>	
+		</td>
 	</tr>
 	<tr> 
 		<td>Costo contratación</td>
-		<td style="height: 0px; "><input type="text" name="txtCostoContratacion"/><br></td>
+		<td style="height: 0px; "><input type="text" name="txtCostoContratacion" min="1" max="999999" required/><br></td>
 	</tr>
 	<tr> 
 		<td style="width: 165px; ">Costo máximo asegurado</td>
-		<td style="height: 0px; "><input type="text" name="txtCostoMaximo"/><br></td>
+		<td style="height: 0px; "><input type="text" name="txtCostoMaximo" min="1" max="999999" required/><br></td>
 	</tr>
 	<tr> 
 		<td></td>
@@ -68,15 +79,19 @@
 </form>
 
 <% 
-	int filas=0;
-	if(request.getAttribute("filasAfectadas")!=null)
-		filas= (int)request.getAttribute("filasAfectadas");
+	//int filas=0;
+	if(request.getAttribute("filasAfectadas")!=null){
+		int filas= (int)request.getAttribute("filasAfectadas");
 %>
-<% if(filas==1) 
-	{
+<% 		if(filas==1) 
+		{
 %>
-		Seguro agregado correctamente
-<%} %>
+			Seguro agregado correctamente
+		<%} else { %>
+		Verifique existe un error.....
+		<%}
+  	}
+  	%>
 
 
 </body>

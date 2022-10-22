@@ -2,6 +2,7 @@ package dominio;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -82,4 +83,28 @@ public class SeguroDao {
 		return lista;
 	}
 	
+	public Seguro ObtenerIdSeg_Increment() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Seguro lista = new Seguro();
+		Connection conn = null;
+		try{
+			Class.forName("com.mysql.jdbc.Driver");
+			conn = DriverManager.getConnection(host, user, pass);
+			String query = "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'SegurosGroup' AND TABLE_NAME = 'seguros'";
+			PreparedStatement pst = conn.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			rs.next();
+			lista.setIdSeguro(rs.getInt(1));
+			
+			conn.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{	}
+		return lista;
+	}
 }
