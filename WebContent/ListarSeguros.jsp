@@ -63,6 +63,7 @@
 		<tr>
 			<th>ID seguro</th>
 			<th>Descripcion seguro</th>
+			<th>Descripcion tipo seguro</th>
 			<th>Costo contratacion</th>
 			<th>Costo maximo asegurado</th>
 			<th></th>
@@ -75,6 +76,7 @@
 		<tr>  
 		     <td><%=seguro.getIdSeguro() %></td>
 		     <td><%=seguro.getDescripcion() %></td>
+		     <td><%=seguro.getTipoSeguro().getDescripcion() %></td>
 		     <td><%=seguro.getCostoContratacion() %></td>
 		     <td><%=seguro.getCostoAsegurado() %></td>  
 		</tr>

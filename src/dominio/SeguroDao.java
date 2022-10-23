@@ -16,22 +16,19 @@ public class SeguroDao {
 	//AGREGAR SEGURO
 	public int agregarSeguro(Seguro seguro)
 	{
-		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-	
 		int filas=0;
 		Connection cn = null;
 		try
 		{
 			cn = DriverManager.getConnection(host+dbName, user,pass);
 			Statement st = cn.createStatement();
-			String query = "Insert into seguros(descripcion, idTipo, costoContratacion, costoAsegurado) values ('"+seguro.getDescripcion()+"','"+seguro.getIdTipo()+"','"+seguro.getCostoContratacion()+"','"+seguro.getCostoAsegurado()+"')";
+			String query = "Insert into seguros(descripcion, idTipo, costoContratacion, costoAsegurado) values ('"+seguro.getDescripcion()+"','"+seguro.getTipoSeguro().getIdTipo()+"','"+seguro.getCostoContratacion()+"','"+seguro.getCostoAsegurado()+"')";
 			filas=st.executeUpdate(query);
 		}
 		catch(Exception e)
@@ -40,14 +37,12 @@ public class SeguroDao {
 		}
 		return filas;
 	}
-	
-	//LISTAR SEGUROS
+
 	public ArrayList<Seguro> obtenerSeguros() {
 
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -57,17 +52,21 @@ public class SeguroDao {
 			conn = DriverManager.getConnection(host + dbName, user, pass);
 			Statement st = conn.createStatement();
 			
-			ResultSet rs = st.executeQuery("SELECT idSeguro, descripcion, idTipo, costoContratacion, costoAsegurado FROM segurosgroup.seguros;");
+			ResultSet rs = st.executeQuery("SELECT SEG.idSeguro, SEG.Descripcion, TSEG.IdTipo, TSEG.Descripcion, SEG.costoContratacion, SEG.costoAsegurado FROM Seguros SEG INNER JOIN TipoSeguros TSEG ON SEG.idTipo = TSEG.idTipo");
 			
 			while(rs.next()){
 			
-
 				Seguro rsSeguro = new Seguro();
-				rsSeguro.setIdSeguro(rs.getInt("idSeguro"));
-				rsSeguro.setDescripcion(rs.getString("descripcion"));
-				rsSeguro.setIdTipo(rs.getInt("idTipo"));
-				rsSeguro.setCostoContratacion(rs.getFloat("costoContratacion"));
-				rsSeguro.setCostoAsegurado(rs.getFloat("costoAsegurado"));
+				TipoSeguro tipoSeguro = new TipoSeguro();
+				
+				tipoSeguro.setDescripcion(rs.getString("TSEG.Descripcion"));
+				tipoSeguro.setDescripcion(rs.getString("TSEG.IdTipo"));
+				
+				rsSeguro.setIdSeguro(rs.getInt("SEG.idSeguro"));
+				rsSeguro.setDescripcion(rs.getString("SEG.Descripcion"));
+				rsSeguro.setTipoSeguro(tipoSeguro);
+				rsSeguro.setCostoContratacion(rs.getFloat("SEG.costoContratacion"));
+				rsSeguro.setCostoAsegurado(rs.getFloat("SEG.costoAsegurado"));
 			
 				lista.add(rsSeguro);
 			}
@@ -82,12 +81,12 @@ public class SeguroDao {
 	
 		return lista;
 	}
+	
 	public ArrayList<Seguro> obtenerSeguros(String idTipoSeleccionado) {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -97,20 +96,23 @@ public class SeguroDao {
 			conn = DriverManager.getConnection(host + dbName, user, pass);
 			Statement st = conn.createStatement();
 			
-			ResultSet rs = st.executeQuery("Select seg.idSeguro,seg.descripcion,seg.idTipo,seg.costoContratacion,seg.costoAsegurado, tseg.descripcion as descripcionTipo FROM seguros seg inner join tiposeguros tseg on seg.idTipo = tseg.idTipo WHERE seg.idTipo = " + idTipoSeleccionado);
+			ResultSet rs = st.executeQuery("SELECT SEG.idSeguro, SEG.Descripcion, TSEG.IdTipo, TSEG.Descripcion, SEG.costoContratacion, SEG.costoAsegurado FROM Seguros SEG INNER JOIN TipoSeguros TSEG ON SEG.idTipo = TSEG.idTipo WHERE SEG.idTipo = " + idTipoSeleccionado);
 			
 			while(rs.next()){
 				
-				Seguro seguro = new Seguro();
-				seguro.setIdSeguro(rs.getInt("idSeguro"));
-				seguro.setDescripcion(rs.getString("descripcion"));
+				Seguro rsSeguro = new Seguro();
+				TipoSeguro tipoSeguro = new TipoSeguro();
 				
-				//seguro.setTipoSeguro(new TipoSeguro(rs.getInt("idTipo"),rs.getString("descripcionTipo")));
-				seguro.setCostoContratacion(rs.getInt("costoContratacion"));
-				seguro.setCostoAsegurado(rs.getInt("costoAsegurado"));
-
-				//System.out.println(seguro.getIdTipo());
-				lista.add(seguro);
+				tipoSeguro.setDescripcion(rs.getString("TSEG.Descripcion"));
+				tipoSeguro.setDescripcion(rs.getString("TSEG.IdTipo"));
+				
+				rsSeguro.setIdSeguro(rs.getInt("SEG.idSeguro"));
+				rsSeguro.setDescripcion(rs.getString("SEG.Descripcion"));
+				rsSeguro.setTipoSeguro(tipoSeguro);
+				rsSeguro.setCostoContratacion(rs.getFloat("SEG.costoContratacion"));
+				rsSeguro.setCostoAsegurado(rs.getFloat("SEG.costoAsegurado"));
+				
+				lista.add(rsSeguro);
 			}
 			conn.close();
 		}catch(Exception e){
@@ -126,7 +128,6 @@ public class SeguroDao {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		Seguro lista = new Seguro();

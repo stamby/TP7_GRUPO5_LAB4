@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import dominio.Seguro;
 import dominio.SeguroDao;
+import dominio.TipoSeguro;
 
 @WebServlet("/servletSeguro")
 public class servletSeguro extends HttpServlet {
@@ -39,12 +40,13 @@ public class servletSeguro extends HttpServlet {
 		if(request.getParameter("btnAceptar")!=null) {
 			int filasAfectadas=0;
 			SeguroDao sd = new SeguroDao();
+			TipoSeguro ts = new TipoSeguro();
 			String descripcion = request.getParameter("txtDescripcion");
-			int idTipo = Integer.valueOf(request.getParameter("tipoSeguro"));
+			ts.setIdTipo(Integer.valueOf(request.getParameter("tipoSeguro")));
 			float costoContratacion = Float.parseFloat(request.getParameter("txtCostoContratacion"));
 			float costoMaximo = Float.parseFloat(request.getParameter("txtCostoMaximo"));
 			
-			Seguro s = new Seguro(descripcion, idTipo, costoContratacion, costoMaximo);
+			Seguro s = new Seguro(descripcion, ts, costoContratacion, costoMaximo);
 			filasAfectadas = sd.agregarSeguro(s);
 			request.setAttribute("filasAfectadas", filasAfectadas);
 			RequestDispatcher rd = request.getRequestDispatcher("/AgregarSeguro.jsp");   
