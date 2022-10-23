@@ -82,6 +82,45 @@ public class SeguroDao {
 	
 		return lista;
 	}
+	public ArrayList<Seguro> obtenerSeguros(String idTipoSeleccionado) {
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		ArrayList<Seguro> lista = new ArrayList<Seguro>();
+		Connection conn = null;
+		try{
+			conn = DriverManager.getConnection(host + dbName, user, pass);
+			Statement st = conn.createStatement();
+			
+			ResultSet rs = st.executeQuery("Select seg.idSeguro,seg.descripcion,seg.idTipo,seg.costoContratacion,seg.costoAsegurado, tseg.descripcion as descripcionTipo FROM seguros seg inner join tiposeguros tseg on seg.idTipo = tseg.idTipo WHERE seg.idTipo = " + idTipoSeleccionado);
+			
+			while(rs.next()){
+				
+				Seguro seguro = new Seguro();
+				seguro.setIdSeguro(rs.getInt("idSeguro"));
+				seguro.setDescripcion(rs.getString("descripcion"));
+				
+				//seguro.setTipoSeguro(new TipoSeguro(rs.getInt("idTipo"),rs.getString("descripcionTipo")));
+				seguro.setCostoContratacion(rs.getInt("costoContratacion"));
+				seguro.setCostoAsegurado(rs.getInt("costoAsegurado"));
+
+				//System.out.println(seguro.getIdTipo());
+				lista.add(seguro);
+			}
+			conn.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+		
+		}
+		
+		return lista;
+	}
 	
 	public Seguro ObtenerIdSeg_Increment() {
 		try {

@@ -38,6 +38,7 @@ public class Seguro {
 		return idTipo;
 	}
 
+
 	public void setIdTipo(int idTipo) {
 		this.idTipo = idTipo;
 	}
